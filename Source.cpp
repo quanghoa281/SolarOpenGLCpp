@@ -1,6 +1,13 @@
 #include <Windows.h>
 #include "SphereObj.h"
 
+SphereObj g_sun;
+SphereObj g_earth;
+SphereObj g_moon;
+
+GLuint g_angle_day = 0;
+GLuint g_angle_year = 0;
+GLuint gl_angle_moon = 0;
 
 void Init()
 {
@@ -25,9 +32,9 @@ void Init()
     GLfloat shininess = 50.0f;
     glMateriali(GL_FRONT, GL_SHININESS, shininess);
 
-  /*  g_sun = MakeSphere(2.0);
-    g_earth = MakeSphere(1.0);
-    g_moon = MakeSphere(0.2);*/
+    g_sun.makeSphere(2.0);
+    g_earth.makeSphere(1.0);
+    g_moon.makeSphere(0.2);
 }
 void ReShape(int width, int height)
 {
@@ -47,11 +54,11 @@ void RendenScene()
 
     gluLookAt(5.0, 5.0, 15.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 
-   /* GLfloat mat_ambien[] = { 1.0, 1.0, 0.0f, 1.0f };
+    GLfloat mat_ambien[] = { 1.0, 1.0, 0.0f, 1.0f };
     glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mat_ambien);
     GLfloat diff[] = { 05, 0.5, 0.0, 1.0 };
     glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diff);
-    glCallList(g_sun);
+    glCallList(g_sun.getObj());
 
     glRotatef(g_angle_year, 0.0f, 1.0f, 0.0f);
     glTranslated(8.0, 0.0, 0.0);
@@ -61,7 +68,7 @@ void RendenScene()
     glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mat_ambien2);
     GLfloat diff2[] = { 1.0, 1.0, 1.0, 1.0 };
     glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diff2);
-    glCallList(g_earth);
+    glCallList(g_earth.getObj());
 
     glPushMatrix();
     glRotatef(gl_angle_moon, 0.0f, 1.0f, 0.0f);
@@ -72,7 +79,7 @@ void RendenScene()
     GLfloat diff3[] = { 1.0, 1.0, 1.0, 1.0 };
     glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diff3);
 
-    glCallList(g_moon);
+    glCallList(g_moon.getObj());
     glPopMatrix();
 
     glPopMatrix();
@@ -94,7 +101,7 @@ void RendenScene()
     if (g_angle_year >= 360)
     {
         g_angle_year = 0;
-    }*/
+    }
 
     glutSwapBuffers();
     glFlush();

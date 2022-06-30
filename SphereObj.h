@@ -5,19 +5,15 @@ class SphereObj
 {
 private:
 	int cradius;
+	GLuint g_obj;
 public:
-	SphereObj(int radius)
+	/*SphereObj(int radius)
 	: cradius(radius)
 	{
-	}
-	GLuint MakeSphere()
-	{
-		GLuint boxDisplay;
-		boxDisplay = glGenLists(1);
-		glNewList(boxDisplay, GL_COMPILE);
-		glutSolidSphere(cradius, 64, 16);
-		glEndList();
-		return boxDisplay;
-	}
+	}*/
+	void makeSphere(int radius);
+	GLuint getObj();
+
+
 };
 
