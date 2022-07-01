@@ -1,17 +1,20 @@
 #include <Windows.h>
+#include<math.h>
 #include "SphereObj.h"
 
-#define DEBUG 1
+#define DEBUG 0
+#define PI 3.14
 
 #if DEBUG
 SphereObj g_sun;
 SphereObj g_earth;
-SphereObj g_moon;
+//SphereObj g_moon;
 #else
 
 GLuint g_sun;
 GLuint g_earth;
 GLuint g_moon;
+GLuint g_xyz;
 
 #endif 
 
@@ -29,6 +32,56 @@ GLuint MakeSphere(const float& radius)
     glEndList();
     return boxDisplay;
 }
+void drawHollowCircle(GLfloat x, GLfloat y, GLfloat z, GLfloat radius) {
+    int i;
+    int lineAmount = 100; //# of triangles used to draw circle
+
+    //GLfloat radius = 0.8f; //radius
+    GLfloat twicePi = 2.0f * PI;
+
+    glBegin(GL_LINE_LOOP);
+    for (i = 0; i <= lineAmount; i++) {
+        glVertex3f(
+            x + (radius * cos(i * twicePi / lineAmount)),
+            y,
+            z + (radius * sin(i * twicePi / lineAmount))
+        );
+    }
+    glEnd();
+}
+GLuint DrawXYZ()
+{
+    GLuint boxDisplay;
+    boxDisplay = glGenLists(1);
+    glNewList(boxDisplay, GL_COMPILE);
+
+    glColor3f(1, 0, 0);
+    glBegin(GL_LINES); // X red
+    glVertex3f(10.0, 0.0, 0.0);
+    glVertex3f(-10.0, 0.0, 0.0);
+    glEnd();
+
+    glColor3f(0, 1, 1);
+    glBegin(GL_LINES); // Y yallow
+    glVertex3f(0.0, 10.0, 0.0);
+    glVertex3f(0.0, -10.0, 0.0);
+    glEnd();
+
+    glColor3f(0, 0, 1);
+    glBegin(GL_LINES); // Z blue
+    glVertex3f(0.0, 0.0, 10.0);
+    glVertex3f(0.0, 0.0, -10.0);
+    glEnd();
+
+    glBegin(GL_POINTS);
+    glPointSize(3.0);
+    glVertex3f(0.0, 0.0, 0.0);
+    glEnd();
+
+
+    glEndList();
+    return boxDisplay;
+}
 
 
 void RendenScene()
@@ -39,16 +92,18 @@ void RendenScene()
 
     gluLookAt(5.0, 5.0, 15.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 
+    //glCallList(g_xyz);
+
+    glTranslated(0.0, 2.0, 0.0);
+
     GLfloat mat_ambien[] = { 1.0, 1.0, 0.0f, 1.0f };
     glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mat_ambien);
     GLfloat diff[] = { 05, 0.5, 0.0, 1.0 };
     glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diff);
-#if DEBUG
-    glCallList(g_sun.getObj());
-#else
-    glCallList(g_sun);
-#endif
+    drawHollowCircle(0, -1, 0, 8);
     glRotatef(g_angle_year, 0.0f, 1.0f, 0.0f);
+    glCallList(g_sun);
+
     glTranslated(8.0, 0.0, 0.0);
     glRotatef(g_angle_day, 0.0f, 1.0f, 0.0f);
 
@@ -56,12 +111,10 @@ void RendenScene()
     glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mat_ambien2);
     GLfloat diff2[] = { 1.0, 1.0, 1.0, 1.0 };
     glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diff2);
-#if DEBUG
-    glCallList(g_earth.getObj());
-#else
     glCallList(g_earth);
-#endif 
-    glPushMatrix();
+
+    drawHollowCircle(0, -0.25, 0, 2);
+
     glRotatef(gl_angle_moon, 0.0f, 1.0f, 0.0f);
     glTranslated(2.0, 0.0, 0.0);
 
@@ -69,15 +122,7 @@ void RendenScene()
     glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mat_ambien3);
     GLfloat diff3[] = { 1.0, 1.0, 1.0, 1.0 };
     glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diff3);
-
-#if DEBUG
-    glCallList(g_moon.getObj());
-#else
     glCallList(g_moon);
-#endif
-    glPopMatrix();
-
-    glPopMatrix();
 
     Sleep(83);
     gl_angle_moon = (gl_angle_moon + 13);
@@ -137,19 +182,20 @@ void Init()
 #if DEBUG
     g_sun.makeSphere(2.0);
     g_earth.makeSphere(1.0);
-    g_moon.makeSphere(0.2);
+    //g_moon.makeSphere(0.2);
 #else
     g_sun = MakeSphere(2.0);
     g_earth = MakeSphere(1.0);
     g_moon = MakeSphere(0.2);
 #endif
+    g_xyz = DrawXYZ();
 }
 void main()
 {
-    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
-    glutInitWindowSize(500, 500);
+    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB );
+    glutInitWindowSize(1200, 700);
     glutInitWindowPosition(100, 100);
-    glutCreateWindow("Opengl Study");
+    glutCreateWindow("Opengl Solar System");
 
     Init();
     glutReshapeFunc(ReShape);
