@@ -1,7 +1,7 @@
 #include <Windows.h>
 #include "SphereObj.h"
 
-#define DEBUG 1
+#define DEBUG 0
 
 #if DEBUG
 SphereObj g_sun;
