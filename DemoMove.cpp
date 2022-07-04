@@ -48,21 +48,33 @@ void RendenScene()
     glLoadIdentity();
 
     //gluLookAt(5.0, 5.0, 15.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+<<<<<<< HEAD
     gluLookAt(5, 2, 5, 0, 1.0, 0, 0.0, 1.0, 0.0);
     glCallList(g_xyz);
 
+=======
+    gluLookAt(5, 5, 5, 0, 1.0, 0, 0.0, 1.0, 0.0);
+    glCallList(g_xyz);
+
+    glTranslated(0.0, 2.0, 0.0);
+>>>>>>> ad2f0910c20563df8734b7b6863c7c0116a12183
 
     GLfloat mat_ambien[] = { 1.0, 1.0, 0.0f, 1.0f };
     glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mat_ambien);
     GLfloat diff[] = { 05, 0.5, 0.0, 1.0 };
     glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diff);
 
+<<<<<<< HEAD
     glPushMatrix();
     glTranslated(0.0, 2.0, 0.0);
     glCallList(g_sun.get());
     glPopMatrix();
     glTranslated(-4.0, -0.2, -1.0);
     glCallList(g_box.get());
+=======
+    glCallList(g_sun.get());
+
+>>>>>>> ad2f0910c20563df8734b7b6863c7c0116a12183
     
     glutSwapBuffers();
     glFlush();
