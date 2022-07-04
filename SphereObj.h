@@ -13,7 +13,8 @@ public:
 	}*/
 	void makeSphere(int radius);
 	GLuint getObj();
-
-
 };
 
+class ShapeObj
+{
+};
