@@ -11,9 +11,6 @@ public:
 	GLuint get();
 };
 
-class ShapeObj
-{
-};
 class RectangleObj
 {
 private:
