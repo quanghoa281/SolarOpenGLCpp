@@ -22,6 +22,35 @@ GLuint g_angle_day = 0;
 GLuint g_angle_year = 0;
 GLuint gl_angle_moon = 0;
 
+float g_x = 0.0;
+float g_z = 0.0;
+float lz = -10.0;
+float lx = 0.0;
+float angle = 0.0;
+
+float deltaAngle = 0.0f;
+int xOrigin = -1;
+bool g_is_rotate = true;
+
+void OnKeyDown(int key, int xx, int yy) {
+    switch (key)
+    {
+    case GLUT_KEY_LEFT:
+        g_x -= 0.5;
+        //g_z -= 0.5;
+        break;
+    case GLUT_KEY_RIGHT:
+        g_x += 0.5;
+        //g_z += 0.5;
+        break;
+    case GLUT_KEY_UP:
+        g_z -= 0.5;
+        break;
+    case GLUT_KEY_DOWN:
+        g_z += 0.5;
+        break;
+    }
+}
 
 GLuint MakeSphere(const float& radius)
 {
@@ -82,17 +111,47 @@ GLuint DrawXYZ()
     glEndList();
     return boxDisplay;
 }
+void mouseButton(int button, int state, int x, int y)
+{
+    // only start motion if the left button is pressed
+    if (button == GLUT_RIGHT_BUTTON || button == GLUT_LEFT_BUTTON)
+    {
+        // when the button is released
+        if (state == GLUT_UP)
+        {
+            angle += deltaAngle;
+            xOrigin = -3;
+            g_is_rotate = false;
+        }
+        else
+        {
+            g_is_rotate = true;
+            deltaAngle = 0.0;
+            xOrigin = x;
+        }
+    }
+}
+void mouseMove(int x, int y)
+{
+    if (g_is_rotate)
+    {
+        // this will only be true when the left button is down
+        deltaAngle += (x - xOrigin) * 0.0005f;
+        // update camera's direction
+        g_x = 10 * sin(angle + deltaAngle);
+        g_z = 10 * cos(angle + deltaAngle);
+    }
 
-
+}
 void RendenScene()
 {
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
 
-    gluLookAt(5.0, 5.0, 15.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
-
-    //glCallList(g_xyz);
+    //gluLookAt(5.0, 5.0, 15.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+    gluLookAt(g_x, 5, 10, 0, 0.0, g_z, 0.0, 1.0, 0.0);
+    glCallList(g_xyz);
 
     glTranslated(0.0, 2.0, 0.0);
 
@@ -159,6 +218,9 @@ void ReShape(int width, int height)
 }
 void Init()
 {
+    g_x = 0 * sin(angle);
+    g_z = 0 * cos(angle);
+
     glClearColor(0.0, 0.0, 0.0, 0.0);
     glEnable(GL_DEPTH_TEST);
 
@@ -200,6 +262,9 @@ void main()
     Init();
     glutReshapeFunc(ReShape);
     glutDisplayFunc(RendenScene);
+    glutSpecialFunc(OnKeyDown);
+    glutMouseFunc(mouseButton);
+    glutMotionFunc(mouseMove);
 
     glutMainLoop();
 

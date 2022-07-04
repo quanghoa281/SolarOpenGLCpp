@@ -11,9 +11,17 @@ public:
 	: cradius(radius)
 	{
 	}*/
-	void makeSphere(int radius);
-	GLuint getObj();
-
-
+	void make(int radius);
+	GLuint get();
 };
 
+class RectangleObj
+{
+private:
+	int cradius;
+	GLuint g_obj;
+public:
+
+	void make(const float length, const float width, const float height);
+	GLuint get();
+};

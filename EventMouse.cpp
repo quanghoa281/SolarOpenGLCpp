@@ -1,10 +1,12 @@
 
 #include <gl\glut.h>
 #include <math.h>
+#include <stdio.h>
+
 
 float g_x = 0.0;
 float g_z = 0.0;
-float lz = -10.0;
+float lz = 0;
 float lx = 0.0;
 float angle = 0.0;
 
@@ -14,8 +16,8 @@ bool g_is_rotate = false;
 
 void Init()
 {
-    g_x = 10 * sin(angle);
-    g_z = 10 * cos(angle);
+    g_x = 0 * sin(angle);
+    g_z = 0 * cos(angle);
 
     glClearColor(0.0, 0.0, 0.0, 0.0);
     glEnable(GL_DEPTH_TEST);
@@ -53,16 +55,16 @@ void OnKeyDown(int key, int xx, int yy) {
     switch (key)
     {
     case GLUT_KEY_LEFT:
-        g_x -= 0.1;
+        g_x -= 0.3;
         break;
     case GLUT_KEY_RIGHT:
-        g_x += 0.1;
+        g_x += 0.3;
         break;
     case GLUT_KEY_UP:
-        g_z -= 0.1;
+        g_z -= 0.3;
         break;
     case GLUT_KEY_DOWN:
-        g_z += 0.1;
+        g_z += 0.3;
         break;
     }
 }
@@ -90,13 +92,28 @@ void mouseButton(int button, int state, int x, int y)
 
 void mouseMove(int x, int y)
 {
-    if (g_is_rotate)
+    //if (g_is_rotate)
     {
         // this will only be true when the left button is down
-        deltaAngle += (x - xOrigin) * 0.0005f;
+        //deltaAngle += (x - xOrigin) * 0.0005f;
         // update camera's direction
-        g_x = 10 * sin(angle + deltaAngle);
-        g_z = 10 * cos(angle + deltaAngle);
+        //g_x = 10 * sin(angle + deltaAngle);
+        //g_z = 10 * cos(angle + deltaAngle);
+        if (lx > x) {
+            g_x += 0.5;
+        }
+        else {
+            g_x -= 0.5;
+        }
+        if (lz > y) {
+            g_z += 0.5;
+        }
+        else {
+            g_z -= 0.5;
+        }
+        lx = x;
+        lz = y;
+        printf("x = %d , y = %d , g_x = %f, g_z = %f \n", x, y, g_x, g_z);
     }
 
 }
@@ -128,7 +145,7 @@ void RenderScene()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
 
-    gluLookAt(g_x, 1.0, g_z, 0, 1.0, 0, 0, 1, 0);
+    gluLookAt(8, 1.0, 8, g_x, 1.0, g_z, 0, 1, 0);
     DrawCoordinate();
 
     glPushMatrix();
@@ -148,8 +165,9 @@ void main()
     glutReshapeFunc(ReShape);
     glutDisplayFunc(RenderScene);
     glutIdleFunc(RenderScene);
-    //glutSpecialFunc(OnKeyDown);
+    glutSpecialFunc(OnKeyDown);
     glutMouseFunc(mouseButton);
+    glutPassiveMotionFunc(mouseMove);
     //glutMotionFunc(mouseMove);
     glutMainLoop();
 
